@@ -5,13 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import PrimeReact from 'primereact/api';
+import { BrowserRouter } from 'react-router-dom';
 
 PrimeReact.ripple = true;
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <App />
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,10 +1,9 @@
 import { InputText } from "primereact/inputtext";
 import styled from "styled-components";
 import { ToggleButton } from "primereact/togglebutton";
-import { ProgressBar } from "primereact/progressbar";
-import { Fragment, useReducer } from "react";
+import { useReducer } from "react";
 import { Button } from "primereact/button";
-import { Message } from "primereact/message";
+
 
 import {
   PopulateInitialProjectState,
@@ -12,12 +11,14 @@ import {
   ProjectReducer,
 } from "../reducers/ProjectReducer";
 import Project from "../models/Project";
+import { useHistory } from "react-router-dom";
 
 const HelpMessage = styled.small`
   height: 0.75rem;
 `;
 
 const ProjectForm = (props) => {
+  const history = useHistory()
   const initialState = PopulateInitialProjectState({ ...props.project });
   const [projectState, dispatchProject] = useReducer(
     ProjectReducer,
@@ -32,23 +33,15 @@ const ProjectForm = (props) => {
       data[key]=typeof projectState[key]==='object'&&projectState[key]?projectState[key].value:projectState[key];
     })
     console.log(data)
-    dispatchProject({type:ProjectActions.isBuilding,payload:true})
+    history.push("/")
   };
 
   return (
-    <Fragment>
-      {projectState.statusMessage ? (
-        <Message
-          severity={projectState.status}
-          text={projectState.statusMessage}
-          className="w-full justify-content-start mb-2"
-          onClick={()=>{alert("Hi")}}
-        />
-      ) : null}
+    <div className="p-3">
       <form className="flex flex-column" onSubmit={(e) => BeginProcess(e)}>
         <div className="flex flex-column">
           <div className="flex flex-row justify-content-between">
-            <div className="field">
+            <div className="field flex-1 mr-2">
               <label htmlFor="name" className="block text-sm">
                 Project Name
               </label>
@@ -58,8 +51,8 @@ const ProjectForm = (props) => {
                 name="projectName"
                 className={
                   projectState.projectName.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 value={projectState.projectName.value}
                 onChange={(e) => {
@@ -80,7 +73,7 @@ const ProjectForm = (props) => {
                 {projectState.projectName.isValid ? "" : "Invalid Project Name"}
               </HelpMessage>
             </div>
-            <div className="field ">
+            <div className="field flex-1 mr-2">
               <label htmlFor="projectPath" className="block text-sm">
                 Project Path
               </label>
@@ -90,8 +83,8 @@ const ProjectForm = (props) => {
                 aria-describedby="projectPath-help"
                 className={
                   projectState.projectPath.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 value={projectState.projectPath.value}
                 onChange={(e) => {
@@ -112,7 +105,7 @@ const ProjectForm = (props) => {
                 {projectState.projectPath.isValid ? "" : "Invalid Project Path"}
               </HelpMessage>
             </div>
-            <div className="field ">
+            <div className="field flex-1 mr-2">
               <label htmlFor="deploymentPath" className="block text-sm">
                 Deployment Path
               </label>
@@ -122,8 +115,8 @@ const ProjectForm = (props) => {
                 aria-describedby="deploymentPath-help"
                 className={
                   projectState.deploymentPath.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 value={projectState.deploymentPath.value}
                 onChange={(e) => {
@@ -148,7 +141,7 @@ const ProjectForm = (props) => {
             </div>
           </div>
           <div className="flex flex-row justify-content-between">
-            <div className="field ">
+            <div className="field flex-1 mr-2">
               <label htmlFor="baseHref" className="block text-sm">
                 Base Href
               </label>
@@ -158,8 +151,8 @@ const ProjectForm = (props) => {
                 aria-describedby="baseHref-help"
                 className={
                   projectState.baseHref.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 value={projectState.baseHref.value}
                 onChange={(e) => {
@@ -180,9 +173,9 @@ const ProjectForm = (props) => {
                 {projectState.baseHref.isValid ? "" : "Invalid Base Href"}
               </HelpMessage>
             </div>
-            <div className="field ">
+            <div className="field flex-1 mr-2">
               <label htmlFor="warName" className="block text-sm">
-                War Name
+                War Name 
               </label>
               <InputText
                 id="warName"
@@ -190,10 +183,11 @@ const ProjectForm = (props) => {
                 aria-describedby="warName-help"
                 className={
                   projectState.warName.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 value={projectState.warName.value}
+                disabled={!projectState.isWar.value}
                 onChange={(e) => {
                   dispatchProject({
                     type: ProjectActions.warName,
@@ -212,7 +206,7 @@ const ProjectForm = (props) => {
                 {projectState.warName.isValid ? "" : "Invalid War Name"}
               </HelpMessage>
             </div>
-            <div className="field ">
+            <div className="field flex-1 mr-2">
               <label htmlFor="configuration" className="block text-sm">
                 Configuration
               </label>
@@ -222,8 +216,8 @@ const ProjectForm = (props) => {
                 aria-describedby="configuration-help"
                 className={
                   projectState.configuration.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 value={projectState.configuration.value}
                 onChange={(e) => {
@@ -241,12 +235,12 @@ const ProjectForm = (props) => {
                     : "block text-xs p-error"
                 }
               >
-                {projectState.configuration.isValid ? "" : "Invalid War Name"}
+                {projectState.configuration.isValid ? "" : "Invalid Configuration"}
               </HelpMessage>
             </div>
           </div>
-          <div className="flex flex-row justify-content-between">
-            <div className="field ">
+          <div className="flex flex-row justify-content-start">
+            <div className="field mr-2">
               <label htmlFor="isWar" className="block text-sm">
                 Is War ?
               </label>
@@ -256,8 +250,8 @@ const ProjectForm = (props) => {
                 aria-describedby="isWar-help"
                 className={
                   projectState.isWar.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 checked={projectState.isWar.value}
                 onChange={(e) => {
@@ -268,7 +262,7 @@ const ProjectForm = (props) => {
                 }}
               />
             </div>
-            <div className="field ">
+            <div className="field mr-2">
               <label htmlFor="isProd" className="block text-sm">
                 Is Production Mode ?
               </label>
@@ -278,8 +272,8 @@ const ProjectForm = (props) => {
                 aria-describedby="isProd-help"
                 className={
                   projectState.isProd.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 checked={projectState.isProd.value}
                 onChange={(e) => {
@@ -290,29 +284,7 @@ const ProjectForm = (props) => {
                 }}
               />
             </div>
-            <div className="field ">
-              <label htmlFor="isConfigurable" className="block text-sm">
-                Is Configurable ?
-              </label>
-              <ToggleButton
-                id="isConfigurable"
-                name="isConfigurable"
-                aria-describedby="isConfigurable-help"
-                className={
-                  projectState.isConfigurable.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
-                }
-                checked={projectState.isConfigurable.value}
-                onChange={(e) => {
-                  dispatchProject({
-                    type: ProjectActions.isConfigurable,
-                    payload: e.target.value,
-                  });
-                }}
-              />
-            </div>
-            <div className="field ">
+            <div className="field mr-2">
               <label htmlFor="deployBuild" className="block text-sm">
                 Deploy After Build ?
               </label>
@@ -322,8 +294,8 @@ const ProjectForm = (props) => {
                 aria-describedby="deployBuild-help"
                 className={
                   projectState.deployBuild.isValid
-                    ? "block p-inputtext-sm"
-                    : "block p-inputtext-sm p-invalid"
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
                 }
                 checked={projectState.deployBuild.value}
                 onChange={(e) => {
@@ -335,26 +307,17 @@ const ProjectForm = (props) => {
               />
             </div>
           </div>
-          {projectState.isBuilding || projectState.isDeploying ? (
-            <div className="field ">
-              <label htmlFor="status" className="block text-sm">
-                {projectState.status}
-              </label>
-              <ProgressBar id="status" mode="indeterminate" />
-            </div>
-          ) : (
-            <div className="flex flex-row justify-content-center w-full">
+          <div className="flex flex-row justify-content-center w-full">
               <Button
-                label="Begin"
+                label="Save"
                 type="submit"
                 disabled={!projectState.isFormValid}
                 className="p-button-raised mx-4"
               />
             </div>
-          )}
         </div>
       </form>
-    </Fragment>
+    </div>
   );
 };
 

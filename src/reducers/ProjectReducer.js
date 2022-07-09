@@ -63,7 +63,7 @@ export const PopulateInitialProjectState = (project) => {
     buildDate: project.buildDate,
     deploymentDate: project.deploymentDate,
     isFormValid: false,
-    projectId:project.projectId
+    projectId: project.projectId,
   };
 };
 
@@ -158,7 +158,7 @@ export const ProjectReducer = (state, actions) => {
           isValid: actions.payload.length > 0,
         },
         isFormValid:
-          actions.payload.length > 0 &&
+          (state.isWar.value ? actions.payload.length > 0 : true) &&
           state.projectName.value.length > 0 &&
           state.projectPath.value.length > 0 &&
           state.deploymentPath.value.length > 0 &&
@@ -181,6 +181,18 @@ export const ProjectReducer = (state, actions) => {
           value: actions.payload,
           touched: true,
           isValid: typeof actions.payload === "boolean",
+        },
+        isFormValid:
+          (actions.payload ? state.warName.length > 0 : true) &&
+          state.projectName.value.length > 0 &&
+          state.projectPath.value.length > 0 &&
+          state.deploymentPath.value.length > 0 &&
+          state.configuration.value.length > 0 &&
+          state.baseHref.value.length > 0,
+        warName: {
+          value: state.warName.value,
+          touched: true,
+          isValid: actions.payload ? state.warName.length > 0 : true,
         },
       };
     case ProjectActions.deployBuild:
