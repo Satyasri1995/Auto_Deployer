@@ -11,15 +11,24 @@ import {
   ProjectReducer,
 } from "../reducers/ProjectReducer";
 import Project from "../models/Project";
-import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { ProjectStateActions } from "../store/slices/projects";
+
 
 const HelpMessage = styled.small`
   height: 0.75rem;
 `;
 
 const ProjectForm = (props) => {
-  const history = useHistory()
-  const initialState = PopulateInitialProjectState({ ...props.project });
+
+  const dispatch = useDispatch();
+
+  let project = useSelector(state=>state.data.editProject);
+
+  project=project?project:new Project();
+
+  const initialState = PopulateInitialProjectState({ ...project });
+
   const [projectState, dispatchProject] = useReducer(
     ProjectReducer,
     initialState
@@ -33,7 +42,8 @@ const ProjectForm = (props) => {
       data[key]=typeof projectState[key]==='object'&&projectState[key]?projectState[key].value:projectState[key];
     })
     console.log(data)
-    history.push("/")
+    dispatch(ProjectStateActions.update(data));
+    dispatch(ProjectStateActions.redirectTo("/"));
   };
 
   return (

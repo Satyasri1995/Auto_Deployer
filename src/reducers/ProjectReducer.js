@@ -62,7 +62,12 @@ export const PopulateInitialProjectState = (project) => {
     isBuilding: project.isBuilding,
     buildDate: project.buildDate,
     deploymentDate: project.deploymentDate,
-    isFormValid: false,
+    isFormValid: project.projectName.length > 0 &&
+    project.projectPath.length > 0 &&
+    project.deploymentPath.length > 0 &&
+    project.configuration.length > 0 &&
+    project.baseHref.length > 0 &&
+    project.warName.length > 0,
     projectId: project.projectId,
   };
 };

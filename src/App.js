@@ -5,10 +5,11 @@ import "primereact/resources/primereact.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 import "primeflex/primeflex.css";
 import NavBar from "./widgets/NavBar";
-import Project from "./models/Project";
-import {  Route, Switch } from "react-router-dom";
+import {  Route, Switch, useHistory } from "react-router-dom";
 import ProjectsList from "./widgets/ProjectsList";
 import ProjectForm from "./widgets/ProjectForm";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const AppContainer = styled.div`
   height: 100vh;
@@ -18,22 +19,31 @@ const AppContainer = styled.div`
 
 PrimeReact.ripple = true;
 
-const projects = [];
-const pro = new Project();
-pro.projectName="Project Name";
-projects.push(pro);
-// projects.push(pro);
+
 
 function App() {
+
+  const redirect = useSelector(state=>state.data.redirectTo);
+  const history = useHistory();
+
+  useEffect(()=>{
+    if(redirect){
+      history.push(redirect);
+    }
+  },[redirect,history])
+
   return (
     <AppContainer className="flex flex-column">
        <NavBar/>
        <Switch>
          <Route path="/" exact>
-           <ProjectsList projects={projects} />
+           <ProjectsList />
          </Route>
-         <Route path="/edit">
-           <ProjectForm project={pro} />
+         <Route path="/edit" mode="edit">
+           <ProjectForm />
+         </Route>
+         <Route path="/create" mode="create">
+           <ProjectForm />
          </Route>
        </Switch>
      </AppContainer>

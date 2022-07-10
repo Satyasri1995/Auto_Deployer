@@ -15,7 +15,7 @@ class Project {
     this.isDeployed = data ? data.isDeployed : false;
     this.isBuildSuccess = data ? data.isBuildSuccess : false;
     this.isDeploySuccess = data ? data.isDeploySuccess : false;
-    this.status = data ? data.status : "error";
+    this.status = data ? data.status : "info";
     this.isBuilding = data ? data.isBuilding : false;
     this.buildDate = data ? data.buildDate : null;
     this.deploymentDate = data ? data.deploymentDate : null;
