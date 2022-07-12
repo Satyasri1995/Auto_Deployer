@@ -2,16 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 import Project from "../../models/Project";
 
 
-const pro = new Project();
-pro.projectName="Project Name";
-const pros=[];
-pros.push(pro);
+
+
 
 const initState = {
-  projects: pros,
+  projects: [],
   editProject: null,
   redirectTo:"/",
-  newProject:new Project()
+  newProject:new Project(),
+  operations:{
+    type:null,
+    data:{}
+  }
 };
 
 const ProjectSlice = createSlice({
@@ -23,27 +25,24 @@ const ProjectSlice = createSlice({
         (p) => p.projectId === actions.payload.projectId
       );
       if (pId >= 0) {
-        state.projects[pId] = actions.payload;
+        state.operations.type='update';
       } else {
-        state.projects.push(actions.payload);
+        state.operations.type='add';
       }
+      state.operations.data=actions.payload;
     },
     delete(state, actions) {
-      state.projects = state.projects.filter(
-        (p) => p.projectId !== actions.payload.projectId
-      );
-    },
-    edit(state, actions) {
-      const pId = state.projects.findIndex(
-        (p) => p.projectId === actions.payload.projectId
-      );
-      state.editProject = new Project(state.projects[pId]);
+      state.operations.type='delete';
+      state.operations.data=actions.payload;
     },
     clearEdit(state, __actions) {
       state.editProject = null;
     },
     redirectTo(state,actions){
         state.redirectTo=actions.payload;
+    },
+    loadProjects(state,actions){
+      state.projects=actions.payload;
     }
   },
 });

@@ -8,8 +8,13 @@ import NavBar from "./widgets/NavBar";
 import {  Route, Switch, useHistory } from "react-router-dom";
 import ProjectsList from "./widgets/ProjectsList";
 import ProjectForm from "./widgets/ProjectForm";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import { ProjectStateActions } from "./store/slices/projects";
+
+const electron = window.require('electron');
+
+const {ipcRenderer} = electron;
 
 const AppContainer = styled.div`
   height: 100vh;
@@ -25,6 +30,33 @@ function App() {
 
   const redirect = useSelector(state=>state.data.redirectTo);
   const history = useHistory();
+  const operations = useSelector(state=>state.data.operations);
+  const dispatch = useDispatch();
+
+  ipcRenderer.on("fetchData",(__event,data)=>{
+    data=JSON.parse(data);
+    dispatch(ProjectStateActions.loadProjects(data))
+  })
+
+  useEffect(()=>{
+    switch(operations.type){
+      case 'add':
+        ipcRenderer.emit('add',JSON.stringify(operations.data));
+        break;
+      case 'remove':
+        ipcRenderer.emit('remove',JSON.stringify(operations.data));
+        break;
+      case 'update':
+        ipcRenderer.emit('update',JSON.stringify(operations.data));
+        break;
+      default:
+        console.log('Operation Not Found');
+    }
+  },[operations])
+
+  useEffect(()=>{
+    ipcRenderer.emit("fetch");
+  },[])
 
   useEffect(()=>{
     if(redirect){

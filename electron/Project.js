@@ -22,4 +22,4 @@ class Project {
     this.statusMessage = data ? data.statusMessage : "This is Testing";
   }
 }
-export default Project;
+module.exports=Project;
