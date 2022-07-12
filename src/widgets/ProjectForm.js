@@ -44,6 +44,7 @@ const ProjectForm = (props) => {
     console.log(data)
     dispatch(ProjectStateActions.update(data));
     dispatch(ProjectStateActions.redirectTo("/"));
+    dispatch(ProjectStateActions.clearEdit());
   };
 
   return (
@@ -322,8 +323,9 @@ const ProjectForm = (props) => {
                 label="Save"
                 type="submit"
                 disabled={!projectState.isFormValid}
-                className="p-button-raised mx-4"
+                className="p-button-raised mx-4 p-button-success"
               />
+              
             </div>
         </div>
       </form>

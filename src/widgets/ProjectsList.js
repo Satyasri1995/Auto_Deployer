@@ -23,13 +23,15 @@ const ProjectsList = (props) => {
     return date?new Date(date).toDateString():'None';
   }
 
-  const confirm = (event) => {
+  const confirm = (event,data) => {
     confirmPopup({
       target: event.currentTarget,
       message: "Are you sure you want to proceed?",
       icon: "pi pi-exclamation-triangle",
       acceptClassName: "p-button-danger",
-      accept: () => {},
+      accept: () => {
+        dispatch(ProjectStateActions.delete(data));
+      },
       reject: () => {},
     });
   };
@@ -52,7 +54,7 @@ const ProjectsList = (props) => {
         />
       <Button
           icon="pi pi-trash"
-          onClick={(e)=>confirm(e)}
+          onClick={(e)=>confirm(e,data)}
           className="p-button-raised p-button-danger p-button-sm p-button-rounded"
         />
     </div>

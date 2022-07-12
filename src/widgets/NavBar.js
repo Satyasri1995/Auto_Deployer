@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Ripple } from "primereact/ripple";
 import { Menu } from "primereact/menu";
 import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ProjectStateActions } from "../store/slices/projects";
 
 const StyledTitle = styled(NavLink)`
@@ -14,20 +14,23 @@ const StyledTitle = styled(NavLink)`
   font-family: verdana;
 `;
 
-
-
 const NavBar = (props) => {
-
   const dispatch = useDispatch();
+
+  const currentPage = useSelector((state) => state.data.currentPage);
 
   const menuRef = useRef(null);
 
   const items = [
-    { label: "New Project", icon: "pi pi-fw pi-plus",command:(e)=>{
-      dispatch(ProjectStateActions.redirectTo("/edit"));
-    } },
+    {
+      label: "New Project",
+      icon: "pi pi-fw pi-plus",
+      command: (e) => {
+        dispatch(ProjectStateActions.redirectTo("/edit"));
+      },
+    },
     { label: "Build All", icon: "pi pi-fw pi-play" },
-    { label: "Deploy All", icon: "pi pi-fw pi-inbox" }
+    { label: "Deploy All", icon: "pi pi-fw pi-inbox" },
   ];
 
   return (
@@ -38,12 +41,21 @@ const NavBar = (props) => {
       </StyledTitle>
       <span className="flex-auto"></span>
       <Menu model={items} popup ref={menuRef} id="popup_menu" />
-      <i
-        className="pi pi-cog p-3 text-base cursor-pointer p-ripple"
-        onClick={(e) => menuRef.current.toggle(e)}
-      >
-        <Ripple />
-      </i>
+      {currentPage === "/" ? (
+        <i
+          className="pi pi-cog p-3 text-base cursor-pointer p-ripple"
+          onClick={(e) => menuRef.current.toggle(e)}
+        >
+          <Ripple />
+        </i>
+      ) : (
+        <i
+          className="pi pi-times p-3 text-base cursor-pointer p-ripple"
+          onClick={(e) => dispatch(ProjectStateActions.redirectTo("/"))}
+        >
+          <Ripple />
+        </i>
+      )}
     </header>
   );
 };

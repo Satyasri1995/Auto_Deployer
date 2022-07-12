@@ -1,11 +1,11 @@
 const Project = require("./Project");
 const fs = require("fs");
 const path = require("path");
-const dbPath = path.join(__dirname, "electronDB.dat");
-const electron = require('electron')
-const { ipcMain } = electron;
+const dbPath = path.join(__dirname,'..' ,"electronDB.dat");
+
 
 class Operations{
+
     checkDataBase =  () => {
         const isDbExist =  fs.existsSync(dbPath);
         if (!isDbExist) {
@@ -22,12 +22,8 @@ class Operations{
         const projects = parsedDb.map((item) => new Project(item));
         projects.push(project);
         const strProjects = JSON.stringify(projects);
-        const updatingDb =  fs.writeFileSync(dbPath, strProjects);
-        if (updatingDb) {
-          ipcMain.emit("fetchData", strProjects);
-        } else {
-          ipcMain.emit("error", "something went wrong");
-        }
+        fs.writeFileSync(dbPath, strProjects);
+        return strProjects
       };
       
       removeHandler =  (__event, data) => {
@@ -38,12 +34,8 @@ class Operations{
         let projects = parsedDb.map((item) => new Project(item));
         projects = projects.filter((item) => item.projectId !== project.projectId);
         const strProjects = JSON.stringify(projects);
-        const updatingDb =  fs.writeFileSync(dbPath, strProjects);
-        if (updatingDb) {
-          ipcMain.emit("fetchData", strProjects);
-        } else {
-          ipcMain.emit("error", "something went wrong");
-        }
+        fs.writeFileSync(dbPath, strProjects);
+        return strProjects;
       };
       
       updateHandler =  (__event, data) => {
@@ -57,12 +49,8 @@ class Operations{
           projects[pId]=project;
         }
         const strProjects = JSON.stringify(projects);
-        const updatingDb =  fs.writeFileSync(dbPath, strProjects);
-        if (updatingDb) {
-          ipcMain.emit("fetchData", strProjects);
-        } else {
-          ipcMain.emit("error", "something went wrong");
-        }
+        fs.writeFileSync(dbPath, strProjects);
+        return strProjects;
       };
       
       fetchHandler =  (__event) => {
@@ -70,7 +58,7 @@ class Operations{
         const parsedDb = JSON.parse(rawData);
         const projects = parsedDb.map((item) => new Project(item));
         const strProjects = JSON.stringify(projects);
-        ipcMain.emit("fetchData", strProjects);
+        return strProjects;
       };
       
       buildHandler = (event, data) => {};

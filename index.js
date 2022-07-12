@@ -19,8 +19,7 @@ const options = {
   resizable: true,
   webPreferences: {
     backgroundThrottling: false,
-    nodeIntegration: true,
-    contextIsolation: false
+    preload:path.join(__dirname,'./electron/preload.js')
   },
 };
 
@@ -32,10 +31,9 @@ app.on("ready", () => {
   operations.checkDataBase();
 });
 
-ipcMain.on("add", operations.addHandler);
-ipcMain.on("remove",operations.removeHandler);
-ipcMain.on("update",operations.updateHandler);
-ipcMain.on("remove",operations.removeHandler);
-ipcMain.on("fetch",operations.fetchHandler);
-ipcMain.on("build",operations.buildHandler);
-ipcMain.on("deploy",operations.deployHandler);
+ipcMain.handle("add", operations.addHandler);
+ipcMain.handle("remove",operations.removeHandler);
+ipcMain.handle("update",operations.updateHandler);
+ipcMain.handle("fetch",operations.fetchHandler);
+ipcMain.handle("build",operations.buildHandler);
+ipcMain.handle("deploy",operations.deployHandler);
