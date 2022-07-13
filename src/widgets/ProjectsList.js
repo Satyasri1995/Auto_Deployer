@@ -7,23 +7,21 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { ProjectStateActions } from "../store/slices/projects";
 
-
 const ProjectsList = (props) => {
-
   const dispatch = useDispatch();
 
-  const projects = useSelector(state=>state.data.projects);
+  const projects = useSelector((state) => state.data.projects);
 
-  const editProjectHandler = data => {
+  const editProjectHandler = (data) => {
     dispatch(ProjectStateActions.edit(data));
     dispatch(ProjectStateActions.redirectTo("/edit"));
-  }
+  };
 
-  const dateFormat = date =>{
-    return date?new Date(date).toDateString():'None';
-  }
+  const dateFormat = (date) => {
+    return date ? new Date(date).toDateString() : "None";
+  };
 
-  const confirm = (event,data) => {
+  const confirm = (event, data) => {
     confirmPopup({
       target: event.currentTarget,
       message: "Are you sure you want to proceed?",
@@ -36,38 +34,113 @@ const ProjectsList = (props) => {
     });
   };
 
-  const tableAction = data =>{
-    return <div className="flex flex-row justify-content-around">
-      <ConfirmPopup />
-      <Button
-          icon={data.isBuilding?'pi pi-spin pi-spinner':'pi pi-play'}
+  const tableAction = (data) => {
+    return (
+      <div className="flex flex-row justify-content-around">
+        <ConfirmPopup />
+        <Button
+          onClick={() => {
+            if (!data.isBuilding) {
+              dispatch(ProjectStateActions.build(data));
+            }
+          }}
+          tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+          tooltip={!data.isBuilding ? "Build Project" : "Building Project"}
+          icon={data.isBuilding ? "pi pi-spin pi-spinner" : "pi pi-play"}
           className="p-button-raised p-button-primary p-button-sm p-button-rounded"
         />
-      <Button
-          icon={data.isDeploying?'pi pi-spin pi-spinner':'pi pi-inbox'}
+        <Button
+          onClick={() => {
+            if (!data.isDeploying) {
+              dispatch(ProjectStateActions.deploy(data));
+            }
+          }}
+          tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+          tooltip={!data.isDeploying ? "Deploy Project" : "Deploying Project"}
+          icon={data.isDeploying ? "pi pi-spin pi-spinner" : "pi pi-inbox"}
           className="p-button-raised p-button-help p-button-sm p-button-rounded"
         />
-      <Button
+        <Button
           icon="pi pi-pencil"
-          onClick={(e)=>editProjectHandler(data)}
+          onClick={(e) => editProjectHandler(data)}
+          tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+          tooltip={"Edit Project"}
           className="p-button-raised p-button-warning p-button-sm p-button-rounded"
         />
-      <Button
+        {data.buildDate ? (
+          <Fragment>
+            {data.isBuildSuccess ? (
+              <Button
+                icon="pi pi-file"
+                tooltip={"Show Build log"}
+                tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+                onClick={(e) =>
+                  dispatch(ProjectStateActions.build_success_log(data))
+                }
+                className="p-button-raised p-button-success p-button-sm p-button-rounded"
+              />
+            ) : (
+              <Button
+                icon="pi pi-file-excel"
+                tooltip={"Show Build Error log"}
+                tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+                onClick={(e) =>
+                  dispatch(ProjectStateActions.build_error_log(data))
+                }
+                className="p-button-raised p-button-secondary p-button-sm p-button-rounded"
+              />
+            )}
+          </Fragment>
+        ) : null}
+        {data.deploymentDate ? (
+          <Fragment>
+            {data.isDeploySuccess ? (
+              <Button
+                icon="pi pi-file"
+                tooltip={"Show Deploy log"}
+                tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+                // onClick={(e) => dispatch(ProjectStateActions.build_success_log(data))}
+                className="p-button-raised p-button-success p-button-sm p-button-rounded"
+              />
+            ) : (
+              <Button
+                icon="pi pi-file-excel"
+                tooltip={"Show Deploy Error log"}
+                tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+                // onClick={(e) => dispatch(ProjectStateActions.build_error_log(data))}
+                className="p-button-raised p-button-secondary p-button-sm p-button-rounded"
+              />
+            )}
+          </Fragment>
+        ) : null}
+        <Button
           icon="pi pi-trash"
-          onClick={(e)=>confirm(e,data)}
+          tooltip={"Delete Project"}
+          onClick={(e) => confirm(e, data)}
+          tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
           className="p-button-raised p-button-danger p-button-sm p-button-rounded"
         />
-    </div>
-  }
+      </div>
+    );
+  };
 
   return (
     <Fragment>
       <main className="flex flex-column p-3" style={{ overflowX: "hidden" }}>
-        <DataTable value={projects}   responsiveLayout="scroll">
+        <DataTable value={projects} responsiveLayout="scroll">
           <Column field="projectName" header="Project Name"></Column>
-          <Column body={(rawData)=>dateFormat(rawData.buildDate)} header="Last Build"></Column>
-          <Column body={(rawData)=>dateFormat(rawData.deploymentDate)} header="Last Deployment"></Column>
-          <Column body={(rawData)=>tableAction(rawData)} header="Action"></Column>
+          <Column
+            body={(rawData) => dateFormat(rawData.buildDate)}
+            header="Last Build"
+          ></Column>
+          <Column
+            body={(rawData) => dateFormat(rawData.deploymentDate)}
+            header="Last Deployment"
+          ></Column>
+          <Column
+            body={(rawData) => tableAction(rawData)}
+            header="Action"
+          ></Column>
         </DataTable>
       </main>
     </Fragment>

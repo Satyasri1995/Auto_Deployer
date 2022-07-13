@@ -12,11 +12,13 @@ let tray;
 let operations = new Operations();
 const htmlPath = path.join(__dirname, "./build/index.html");
 const options = {
-  width: 750,
-  height: 450,
+  width: 800,
+  height: 500,
   frame: true,
   show: true,
   resizable: true,
+  skipTaskbar:true,
+  movable:true,
   webPreferences: {
     backgroundThrottling: false,
     preload:path.join(__dirname,'./electron/preload.js')
@@ -24,7 +26,6 @@ const options = {
 };
 
 app.on("ready", () => {
-  console.log(htmlPath);
   mainWindow = new MainWindow(options, htmlPath);
   const iconPath = path.join(__dirname, "./electron/assets/electron.png");
   tray = new AppTray(iconPath, mainWindow);
@@ -35,5 +36,7 @@ ipcMain.handle("add", operations.addHandler);
 ipcMain.handle("remove",operations.removeHandler);
 ipcMain.handle("update",operations.updateHandler);
 ipcMain.handle("fetch",operations.fetchHandler);
-ipcMain.handle("build",operations.buildHandler);
+ipcMain.on("build",operations.buildHandler);
 ipcMain.handle("deploy",operations.deployHandler);
+ipcMain.handle("build_success_log",operations.buildSuccessLogHandler);
+ipcMain.handle("build_error_log",operations.buildErrorLogHandler);

@@ -29,8 +29,19 @@ const ProjectSlice = createSlice({
       state.operations.data = actions.payload;
     },
     delete(state, actions) {
-      state.operations.type = "remove";
-      state.operations.data = actions.payload;
+      state.operations={type:"remove",data:actions.payload}
+    },
+    build(state,actions){
+      state.operations={type:"build",data:actions.payload}
+    },
+    build_success_log(state,actions){
+      state.operations={type:"build_success_log",data:actions.payload}
+    },
+    build_error_log(state,actions){
+      state.operations={type:"build_error_log",data:actions.payload}
+    },
+    deploy(state,actions){
+      state.operations={type:"deploy",data:actions.payload}
     },
     clearEdit(state, __actions) {
       state.editProject = null;
