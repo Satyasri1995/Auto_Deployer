@@ -188,7 +188,7 @@ export const ProjectReducer = (state, actions) => {
           isValid: typeof actions.payload === "boolean",
         },
         isFormValid:
-          (actions.payload ? state.warName.length > 0 : true) &&
+          (actions.payload ? state.warName.value.length > 0 : true) &&
           state.projectName.value.length > 0 &&
           state.projectPath.value.length > 0 &&
           state.deploymentPath.value.length > 0 &&
@@ -197,7 +197,7 @@ export const ProjectReducer = (state, actions) => {
         warName: {
           value: state.warName.value,
           touched: true,
-          isValid: actions.payload ? state.warName.length > 0 : true,
+          isValid: actions.payload ? state.warName.value.length > 0 : true,
         },
       };
     case ProjectActions.deployBuild:

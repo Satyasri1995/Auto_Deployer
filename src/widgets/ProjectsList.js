@@ -18,7 +18,7 @@ const ProjectsList = (props) => {
   };
 
   const dateFormat = (date) => {
-    return date ? new Date(date).toDateString() : "None";
+    return date ? new Date(date).toLocaleString() : "None";
   };
 
   const confirm = (event, data) => {
@@ -44,26 +44,33 @@ const ProjectsList = (props) => {
               dispatch(ProjectStateActions.build(data));
             }
           }}
-          tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+          tooltipOptions={{position:'left', mouseTrack: true, mouseTrackTop: true }}
           tooltip={!data.isBuilding ? "Build Project" : "Building Project"}
           icon={data.isBuilding ? "pi pi-spin pi-spinner" : "pi pi-play"}
           className="p-button-raised p-button-primary p-button-sm p-button-rounded"
         />
-        <Button
-          onClick={() => {
-            if (!data.isDeploying) {
-              dispatch(ProjectStateActions.deploy(data));
-            }
-          }}
-          tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
-          tooltip={!data.isDeploying ? "Deploy Project" : "Deploying Project"}
-          icon={data.isDeploying ? "pi pi-spin pi-spinner" : "pi pi-inbox"}
-          className="p-button-raised p-button-help p-button-sm p-button-rounded"
-        />
+        {data.buildDate ? (
+          <Fragment>
+            {data.isDeploying}
+            <Button
+              onClick={() => {
+                if (!data.isDeploying) {
+                  dispatch(ProjectStateActions.deploy(data));
+                }
+              }}
+              tooltipOptions={{position:'left', mouseTrack: true, mouseTrackTop: true }}
+              tooltip={
+                !data.isDeploying ? "Deploy Project" : "Deploying Project"
+              }
+              icon={data.isDeploying ? "pi pi-spin pi-spinner" : "pi pi-inbox"}
+              className="p-button-raised p-button-help p-button-sm p-button-rounded"
+            />
+          </Fragment>
+        ) : null}
         <Button
           icon="pi pi-pencil"
           onClick={(e) => editProjectHandler(data)}
-          tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+          tooltipOptions={{position:'left', mouseTrack: true, mouseTrackTop: true }}
           tooltip={"Edit Project"}
           className="p-button-raised p-button-warning p-button-sm p-button-rounded"
         />
@@ -73,7 +80,7 @@ const ProjectsList = (props) => {
               <Button
                 icon="pi pi-file"
                 tooltip={"Show Build log"}
-                tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+                tooltipOptions={{position:'left', mouseTrack: true, mouseTrackTop: true }}
                 onClick={(e) =>
                   dispatch(ProjectStateActions.build_success_log(data))
                 }
@@ -83,7 +90,7 @@ const ProjectsList = (props) => {
               <Button
                 icon="pi pi-file-excel"
                 tooltip={"Show Build Error log"}
-                tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+                tooltipOptions={{position:'left', mouseTrack: true, mouseTrackTop: true }}
                 onClick={(e) =>
                   dispatch(ProjectStateActions.build_error_log(data))
                 }
@@ -98,16 +105,16 @@ const ProjectsList = (props) => {
               <Button
                 icon="pi pi-file"
                 tooltip={"Show Deploy log"}
-                tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
-                // onClick={(e) => dispatch(ProjectStateActions.build_success_log(data))}
+                tooltipOptions={{position:'left', mouseTrack: true, mouseTrackTop: true }}
+                onClick={(e) => dispatch(ProjectStateActions.deploy_success_log(data))}
                 className="p-button-raised p-button-success p-button-sm p-button-rounded"
               />
             ) : (
               <Button
                 icon="pi pi-file-excel"
                 tooltip={"Show Deploy Error log"}
-                tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
-                // onClick={(e) => dispatch(ProjectStateActions.build_error_log(data))}
+                tooltipOptions={{position:'left', mouseTrack: true, mouseTrackTop: true }}
+                onClick={(e) => dispatch(ProjectStateActions.deploy_error_log(data))}
                 className="p-button-raised p-button-secondary p-button-sm p-button-rounded"
               />
             )}
@@ -117,7 +124,7 @@ const ProjectsList = (props) => {
           icon="pi pi-trash"
           tooltip={"Delete Project"}
           onClick={(e) => confirm(e, data)}
-          tooltipOptions={{ mouseTrack: true, mouseTrackTop: true }}
+          tooltipOptions={{position:'left', mouseTrack: true, mouseTrackTop: true }}
           className="p-button-raised p-button-danger p-button-sm p-button-rounded"
         />
       </div>
@@ -138,7 +145,13 @@ const ProjectsList = (props) => {
             header="Last Deployment"
           ></Column>
           <Column
-            body={(rawData) => tableAction(rawData)}
+            body={(rawData) => (rawData.isBuilding||rawData.isDeploying)?(
+              <div className="flex flex-row">
+                {rawData.isBuilding?'Building Project ... ':'Deploying Project ... '}
+                <br/>                
+                <i className="pi pi-spin pi-spinner"></i>
+              </div>
+            ):(tableAction(rawData))}
             header="Action"
           ></Column>
         </DataTable>

@@ -295,28 +295,6 @@ const ProjectForm = (props) => {
                 }}
               />
             </div>
-            <div className="field mr-2">
-              <label htmlFor="deployBuild" className="block text-sm">
-                Deploy After Build ?
-              </label>
-              <ToggleButton
-                id="deployBuild"
-                name="deployBuild"
-                aria-describedby="deployBuild-help"
-                className={
-                  projectState.deployBuild.isValid
-                    ? "block p-inputtext-sm w-full"
-                    : "block p-inputtext-sm w-full p-invalid"
-                }
-                checked={projectState.deployBuild.value}
-                onChange={(e) => {
-                  dispatchProject({
-                    type: ProjectActions.deployBuild,
-                    payload: e.target.value,
-                  });
-                }}
-              />
-            </div>
           </div>
           <div className="flex flex-row justify-content-center w-full">
               <Button

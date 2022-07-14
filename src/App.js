@@ -9,9 +9,10 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import ProjectsList from "./widgets/ProjectsList";
 import ProjectForm from "./widgets/ProjectForm";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { ProjectStateActions } from "./store/slices/projects";
 import Project from "./models/Project";
+import { Messages } from "primereact/messages";
 
 const AppContainer = styled.div`
   height: 100vh;
@@ -26,12 +27,19 @@ function App() {
   const history = useHistory();
   const operations = useSelector((state) => state.data.operations);
   const projects = useSelector((state) => state.data.projects);
+  const messages = useSelector((state) => state.data.msgs);
   const dispatch = useDispatch();
+  const msgs = useRef(null);
 
   useEffect(() => {
     window.electron.status((__event, data) => {
-      console.log(data);
       let project = new Project(JSON.parse(data));
+        dispatch(
+          ProjectStateActions.message({
+            severity: project.status,
+            text: project.statusMessage,
+          })
+        );
       let newProjects = [...projects];
       let pId = newProjects.findIndex(
         (item) => item.projectId === project.projectId
@@ -77,16 +85,20 @@ function App() {
           window.electron.build_error_log(JSON.stringify(operations.data));
           break;
         case "deploy":
+          window.electron.deploy(JSON.stringify(operations.data));
           break;
-        case "log":
-          window.electron.log(JSON.stringify(operations.data));
+        case "deploy_success_log":
+          window.electron.deploy_success_log(JSON.stringify(operations.data));
+          break;
+        case "deploy_error_log":
+          window.electron.deploy_error_log(JSON.stringify(operations.data));
           break;
         default:
           console.log("Operation Not Found");
       }
     }
     doOperations();
-  }, [operations,dispatch]);
+  }, [operations, dispatch]);
 
   useEffect(() => {
     async function fetchData() {
@@ -103,9 +115,25 @@ function App() {
     }
   }, [redirect, history]);
 
+  useEffect(() => {
+    if(msgs.current){
+      msgs.current.replace({
+        severity: messages.severity,
+        sticky: false,
+        detail:messages.text,
+        life:4000
+      });
+    }
+  }, [messages]);
+
+  useEffect(()=>{
+    document.title="Auto Deployer"
+  })
+
   return (
     <AppContainer className="flex flex-column">
       <NavBar />
+      {messages.severity ? <Messages ref={msgs} /> : null}
       <Switch>
         <Route path="/" exact>
           <ProjectsList />

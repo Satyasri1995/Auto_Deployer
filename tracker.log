@@ -1,0 +1,53 @@
+* commit 5c299db28a85da8acced8a8ff90dd85cc43ee9e8 (HEAD -> master, origin/master)
+| Author: Dvs <satyasri.125110044@gmail.com>
+| Date:   Wed Jul 13 23:18:22 2022 +0530
+| 
+|     added build functionality
+| 
+* commit 0650bc8775649559742f2edc52af5a4b70aa84d6
+| Author: Dvs <satyasri.125110044@gmail.com>
+| Date:   Tue Jul 12 20:37:01 2022 +0530
+| 
+|     ipc communication implemented
+| 
+* commit 26c7f0d0c9c57ad36ec1525fe44c8133f4855ead
+| Author: Dvs <satyasri.125110044@gmail.com>
+| Date:   Tue Jul 12 14:18:02 2022 +0530
+| 
+|     implemented operations
+| 
+* commit 1a98e92618519c5004811143ec6fd16fc09eb038
+| Author: Dvs <satyasri.125110044@gmail.com>
+| Date:   Sun Jul 10 22:52:26 2022 +0530
+| 
+|     electron code added
+| 
+* commit 28236b4430756c0615bb5b97736637eff610e71a
+| Author: Dvs <satyasri.125110044@gmail.com>
+| Date:   Sun Jul 10 16:15:57 2022 +0530
+| 
+|     ui re-designed
+| 
+* commit cad0c55402e88de1c43bac8b0dd442d8fa0bc1de
+| Author: Dvs <satyasri.125110044@gmail.com>
+| Date:   Sat Jul 9 23:48:45 2022 +0530
+| 
+|     revamp ui
+| 
+* commit 872e0876fc45301395509c5098d2d57dfdd999b0
+| Author: Dvs <satyasri.125110044@gmail.com>
+| Date:   Fri Jul 8 22:24:45 2022 +0530
+| 
+|     ui almost done
+| 
+* commit cdc68f735ac29d0bf91020904e913da9da4884d7
+| Author: Dvs <satyasri.125110044@gmail.com>
+| Date:   Thu Jul 7 23:23:15 2022 +0530
+| 
+|     basic ui done
+| 
+* commit 468f2be3083910fae87a2eb636dafe51a7a7d09c
+  Author: Dvs <satyasri.125110044@gmail.com>
+  Date:   Thu Jul 7 09:56:08 2022 +0530
+  
+      Initialize project using Create React App

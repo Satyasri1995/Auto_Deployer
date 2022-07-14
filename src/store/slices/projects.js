@@ -7,6 +7,10 @@ const initState = {
   redirectTo: "/",
   currentPage: "/",
   newProject: new Project(),
+  msgs:{
+    severity:null,
+    text:null
+  },
   operations: {
     type: null,
     data: {},
@@ -43,6 +47,12 @@ const ProjectSlice = createSlice({
     deploy(state,actions){
       state.operations={type:"deploy",data:actions.payload}
     },
+    deploy_success_log(state,actions){
+      state.operations={type:"deploy_success_log",data:actions.payload}
+    },
+    deploy_error_log(state,actions){
+      state.operations={type:"deploy_error_log",data:actions.payload}
+    },
     clearEdit(state, __actions) {
       state.editProject = null;
     },
@@ -56,6 +66,9 @@ const ProjectSlice = createSlice({
     loadProjects(state, actions) {
       state.projects = actions.payload;
     },
+    message(state,actions){
+      state.msgs=actions.payload;
+    }
   },
 });
 

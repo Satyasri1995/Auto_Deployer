@@ -1,0 +1,8 @@
+java.io.FileNotFoundException: edsquare (Access is denied)
+	at java.io.FileOutputStream.open0(Native Method)
+	at java.io.FileOutputStream.open(FileOutputStream.java:270)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:213)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:101)
+	at sun.tools.jar.Main.run(Main.java:195)
+	at sun.tools.jar.Main.main(Main.java:1288)
+

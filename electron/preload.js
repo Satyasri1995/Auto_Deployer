@@ -9,5 +9,7 @@ contextBridge.exposeInMainWorld("electron", {
   build_success_log:(data)=>ipcRenderer.invoke('build_success_log',data),
   build_error_log:(data)=>ipcRenderer.invoke('build_error_log',data),
   status: (cb) => ipcRenderer.on("status", cb),
-  deploy: (data) => ipcRenderer.invoke("deploy", data),
+  deploy: (data) => ipcRenderer.send("deploy", data),
+  deploy_success_log:(data)=>ipcRenderer.invoke('deploy_success_log',data),
+  deploy_error_log:(data)=>ipcRenderer.invoke('deploy_error_log',data),
 });
