@@ -1,3 +1,4 @@
+const Operations = require("./Operations")
 
 
 const getAppOptions=(path)=>{
@@ -23,41 +24,26 @@ const getMainMenu=(app,mainWindow)=>{
           submenu: [
             { 
               label: "Reload" ,
-              click(){app.relaunch()},
-              accelarator:'Ctrl+R'
+              click(){mainWindow.reload()},
+              accelarator:'CmsOrCtrl+R'
             },
             {
               label:'Quit',
               click(){app.quit()},
-              accelarator:'Ctrl+Q'
+              accelarator:'CmsOrCtrl+Q'
             },
             {
               label:'DevTools',
               click(){mainWindow.webContents.openDevTools()},
               accelarator:'f5'
-            }
-          ],
-        },
-        {
-          label:'Logs',
-          submenu:[
+            },
             {
               label:'Clear Logs',
-              click(){},
-              accelarator:'Ctrl+C+L'
+              click(){new Operations().clearLogs()},
+              accelarator:'CmsOrCtrl+C+L'
             },
-            {
-              label:'Clear Build Logs',
-              click(){},
-              accelarator:'Ctrl+B+L'
-            },
-            {
-              label:'Clear Deploy Logs',
-              click(){},
-              accelarator:'Ctrl+D+L'
-            }
-          ]
-        },
+          ],
+        }
       ]
 }
 

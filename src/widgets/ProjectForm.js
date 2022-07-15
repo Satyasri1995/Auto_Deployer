@@ -5,6 +5,7 @@ import { useReducer } from "react";
 import { Button } from "primereact/button";
 
 
+
 import {
   PopulateInitialProjectState,
   ProjectActions,
@@ -58,6 +59,7 @@ const ProjectForm = (props) => {
               </label>
               <InputText
                 id="name"
+                max={12}
                 aria-describedby="name-help"
                 name="projectName"
                 className={
@@ -247,6 +249,39 @@ const ProjectForm = (props) => {
                 }
               >
                 {projectState.configuration.isValid ? "" : "Invalid Configuration"}
+              </HelpMessage>
+            </div>
+            <div className="field flex-1 mr-2">
+              <label htmlFor="configuration" className="block text-sm">
+                Category
+              </label>
+              <InputText
+                id="category"
+                name="category"
+                max={8}
+                aria-describedby="category-help"
+                className={
+                  projectState.category.isValid
+                    ? "block p-inputtext-sm w-full"
+                    : "block p-inputtext-sm w-full p-invalid"
+                }
+                value={projectState.category.value}
+                onChange={(e) => {
+                  dispatchProject({
+                    type: ProjectActions.category,
+                    payload: e.target.value,
+                  });
+                }}
+              />
+              <HelpMessage
+                id="category-help"
+                className={
+                  projectState.category.isValid
+                    ? "block text-xs"
+                    : "block text-xs p-error"
+                }
+              >
+                {projectState.category.isValid ? "" : "Invalid category"}
               </HelpMessage>
             </div>
           </div>

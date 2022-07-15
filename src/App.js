@@ -9,7 +9,7 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import ProjectsList from "./widgets/ProjectsList";
 import ProjectForm from "./widgets/ProjectForm";
 import { useDispatch, useSelector } from "react-redux";
-import { Fragment, useEffect, useRef } from "react";
+import {  useEffect, useRef } from "react";
 import { ProjectStateActions } from "./store/slices/projects";
 import Project from "./models/Project";
 import { Messages } from "primereact/messages";
@@ -93,6 +93,10 @@ function App() {
         case "deploy_error_log":
           window.electron.deploy_error_log(JSON.stringify(operations.data));
           break;
+        case "filter":
+          let filteredProjects = await window.electron.filter(operations.data);
+          dispatch(ProjectStateActions.loadProjects(JSON.parse(filteredProjects)));
+          break
         default:
           console.log("Operation Not Found");
       }
@@ -106,6 +110,12 @@ function App() {
       data = JSON.parse(data);
       dispatch(ProjectStateActions.loadProjects(data));
     }
+    async function fetchCategories(){
+      let data = await window.electron.fetchCategories();
+      data = JSON.parse(data);
+      dispatch(ProjectStateActions.loadCategories(data));
+    }
+    fetchCategories()
     fetchData();
   }, [dispatch]);
 

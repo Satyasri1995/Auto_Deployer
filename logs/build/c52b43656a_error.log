@@ -1,0 +1,27 @@
+Debugger listening on ws://127.0.0.1:62868/fd1363cc-e479-43c5-934e-24a664e57a35
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+Debugger listening on ws://127.0.0.1:62875/2cba3754-6c03-4b10-a196-22bee4a6972f
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+An unhandled exception occurred: Cannot find module '../Subscriber'
+Require stack:
+- D:\Simplilearn\QuizzBuzz\node_modules\@angular-devkit\architect\node_modules\rxjs\internal\util\canReportError.js
+- D:\Simplilearn\QuizzBuzz\node_modules\@angular-devkit\architect\node_modules\rxjs\internal\Observable.js
+- D:\Simplilearn\QuizzBuzz\node_modules\@angular-devkit\architect\node_modules\rxjs\index.js
+- D:\Simplilearn\QuizzBuzz\node_modules\@angular-devkit\architect\src\api.js
+- D:\Simplilearn\QuizzBuzz\node_modules\@angular-devkit\architect\src\index.js
+- D:\Simplilearn\QuizzBuzz\node_modules\@angular-devkit\build-angular\src\builders\browser\index.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\node_modules\@angular-devkit\architect\node\node-modules-architect-host.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\node_modules\@angular-devkit\architect\node\index.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\models\architect-command.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\commands\build-impl.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\node_modules\@angular-devkit\schematics\tools\export-ref.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\node_modules\@angular-devkit\schematics\tools\index.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\utilities\json-schema.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\models\command-runner.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\lib\cli\index.js
+- C:\Users\satya\AppData\Roaming\npm\node_modules\@angular\cli\lib\init.js
+See "C:\Users\satya\AppData\Local\Temp\ng-wnQKJB\angular-errors.log" for further details.
+Waiting for the debugger to disconnect...
+Waiting for the debugger to disconnect...

@@ -7,6 +7,8 @@ const initState = {
   redirectTo: "/",
   currentPage: "/",
   newProject: new Project(),
+  categories:[],
+  category:'*',
   msgs:{
     severity:null,
     text:null
@@ -65,6 +67,15 @@ const ProjectSlice = createSlice({
     },
     loadProjects(state, actions) {
       state.projects = actions.payload;
+    },
+    loadCategories(state,actions){
+      state.categories=actions.payload;
+    },
+    setCategory(state,actions){
+      state.category=actions.payload;
+    },
+    filterByCategories(state,actions){
+      state.operations={type:'filter',data:actions.payload}
     },
     message(state,actions){
       state.msgs=actions.payload;

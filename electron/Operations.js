@@ -6,7 +6,7 @@ const dbPath = path.join(__dirname, "..", "electronDB.dat");
 const logsBuildPath = path.join(__dirname, "..", "logs", "build");
 const logsDeployPath = path.join(__dirname, "..", "logs", "deploy");
 const system = require("system-commands");
-
+const { dialog } = require("electron");
 
 class Operations {
   checkDataBase = () => {
@@ -14,7 +14,13 @@ class Operations {
     const islogsBuildPathExists = fs.existsSync(logsBuildPath);
     const logsDeployPathExists = fs.existsSync(logsDeployPath);
     if (!isDbExist) {
-      fs.writeFileSync(dbPath, JSON.stringify([]));
+      fs.writeFileSync(
+        dbPath,
+        JSON.stringify({
+          projects: [],
+          categories: [],
+        })
+      );
     }
     if (!islogsBuildPathExists) {
       fs.mkdirSync(logsBuildPath, { recursive: true });
@@ -24,59 +30,80 @@ class Operations {
     }
   };
 
-  addHandler = (event, data) => {
+  addHandler = (__event, data) => {
     const parsedData = JSON.parse(data);
     const project = new Project(parsedData);
     project.projectId = require("crypto").randomBytes(5).toString("hex");
     const rawData = fs.readFileSync(dbPath);
     const parsedDb = JSON.parse(rawData);
-    const projects = parsedDb.map((item) => new Project(item));
+    if (!parsedDb.categories.includes(project.category)) {
+      parsedDb.categories.push(project.category);
+    }
+    const projects = parsedDb.projects.map((item) => new Project(item));
     projects.push(project);
-    const strProjects = JSON.stringify(projects);
-    fs.writeFileSync(dbPath, strProjects);
-    return strProjects;
+    parsedDb.projects = projects;
+    fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
+    return JSON.stringify(parsedDb.projects);
   };
 
-  removeHandler = (event, data) => {
+  removeHandler = (__event, data) => {
     const parsedData = JSON.parse(data);
     const project = new Project(parsedData);
     const rawData = fs.readFileSync(dbPath);
     const parsedDb = JSON.parse(rawData);
-    let projects = parsedDb.map((item) => new Project(item));
+    let projects = parsedDb.projects.map((item) => new Project(item));
     projects = projects.filter((item) => item.projectId !== project.projectId);
-    fs.writeFileSync(dbPath, JSON.stringify(projects));
-    return JSON.stringify(projects);
+    parsedDb.projects = projects;
+    fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
+    return JSON.stringify(parsedDb.projects);
   };
 
-  updateHandler = (event, data) => {
+  updateHandler = (__event, data) => {
     const parsedData = JSON.parse(data);
     const project = new Project(parsedData);
     const rawData = fs.readFileSync(dbPath);
     const parsedDb = JSON.parse(rawData);
-    let projects = parsedDb.map((item) => new Project(item));
+    let projects = parsedDb.projects.map((item) => new Project(item));
     const pId = projects.findIndex(
       (item) => item.projectId === project.projectId
     );
     if (pId >= 0) {
       projects[pId] = project;
     }
-    const strProjects = JSON.stringify(projects);
-    fs.writeFileSync(dbPath, strProjects);
-    return strProjects;
+    if (!parsedDb.categories.includes(project.category)) {
+      parsedDb.categories.push(project.category);
+    }
+    parsedDb.projects = projects;
+    fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
+    return JSON.stringify(parsedDb.projects);
   };
 
   fetchHandler = (__event) => {
     const rawData = fs.readFileSync(dbPath);
     const parsedDb = JSON.parse(rawData);
-    const projects = parsedDb.map((item) => new Project(item));
-    const strProjects = JSON.stringify(projects);
-    return strProjects;
+    const projects = parsedDb.projects.map((item) => new Project(item));
+    return JSON.stringify(projects);
+  };
+
+  filterHandler = (__event, data) => {
+    const rawData = fs.readFileSync(dbPath);
+    const parsedDb = JSON.parse(rawData);
+    let projects=parsedDb.projects.map((item) => new Project(item));
+    if(data!=='*'){
+      projects=projects.filter((item) => item.category===data);
+    }
+    return JSON.stringify(projects);
+  };
+
+  fetchCategoriesHandler = (__event) => {
+    const rawData = fs.readFileSync(dbPath);
+    const parsedDb = JSON.parse(rawData);
+    return JSON.stringify(parsedDb.categories);
   };
 
   buildHandler = (event, data) => {
-    const projects = JSON.parse(fs.readFileSync(dbPath)).map(
-      (item) => new Project(item)
-    );
+    const parsedDb = JSON.parse(fs.readFileSync(dbPath));
+    const projects = parsedDb.projects.map((item) => new Project(item));
     let project = new Project(JSON.parse(data));
     let cmdString = `cd ${project.projectPath} && npm run ng build ${
       project.isProd ? "--prod" : ""
@@ -85,7 +112,6 @@ class Operations {
     project.status = "info";
     project.statusMessage = `Build in-progress please check log file => ${project.projectId}_build.log`;
     project.isBuildSuccess = false;
-    fs.writeFileSync(dbPath, JSON.stringify(projects));
     event.sender.send("status", JSON.stringify(project));
     system(cmdString)
       .then((result) => {
@@ -99,6 +125,7 @@ class Operations {
         );
         fs.writeFileSync(logPath, data);
         project.isBuilding = false;
+        project.buildLog = true;
         project.status = "success";
         project.statusMessage = `Build completed please check log file => ${project.projectId}_success.log`;
         project.isBuildSuccess = true;
@@ -108,7 +135,8 @@ class Operations {
           (item) => item.projectId === project.projectId
         );
         projects[pId] = project;
-        fs.writeFileSync(dbPath, JSON.stringify(projects));
+        parsedDb.projects = projects;
+        fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
       })
       .catch((error) => {
         let logPath = path.join(
@@ -120,6 +148,7 @@ class Operations {
         );
         fs.writeFileSync(logPath, error);
         project.isBuilding = false;
+        project.buildLog = true;
         project.status = "error";
         project.statusMessage = `Build failed please check log file => ${project.projectId}_error.log`;
         project.isBuildSuccess = false;
@@ -128,14 +157,14 @@ class Operations {
           (item) => item.projectId === project.projectId
         );
         projects[pId] = project;
-        fs.writeFileSync(dbPath, JSON.stringify(projects));
+        parsedDb.projects = projects;
+        fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
       });
   };
 
   deployHandler = (event, data) => {
-    const projects = JSON.parse(fs.readFileSync(dbPath)).map(
-      (item) => new Project(item)
-    );
+    const parsedDb = JSON.parse(fs.readFileSync(dbPath));
+    const projects = parsedDb.projects.map((item) => new Project(item));
     const project = new Project(JSON.parse(data));
     const buildProjectFolder = path.join(
       project.projectPath,
@@ -182,8 +211,11 @@ class Operations {
               "deploy",
               `${project.projectId}_success.log`
             );
-            result=result+` \n \n ${src} was deployed to ${dist} successfully on ${new Date().toLocaleString()}`;
+            result =
+              result +
+              ` \n \n ${src} was deployed to ${dist} successfully on ${new Date().toLocaleString()}`;
             fs.writeFileSync(logPath, result);
+            project.deployLog = true;
             project.isDeploying = false;
             project.status = "success";
             project.statusMessage = `Deployment completed please check log file => ${project.projectId}_success.log`;
@@ -194,7 +226,8 @@ class Operations {
               (item) => item.projectId === project.projectId
             );
             projects[pId] = project;
-            fs.writeFileSync(dbPath, JSON.stringify(projects));
+            parsedDb.projects = projects;
+            fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
           })
           .catch((error) => {
             let logPath = path.join(
@@ -206,6 +239,7 @@ class Operations {
             );
             fs.writeFileSync(logPath, error);
             project.isDeploying = true;
+            project.deployLog = true;
             project.status = "error";
             project.statusMessage = `Deployment failed please check log file => ${project.projectId}_error.log`;
             project.isDeploySuccess = false;
@@ -214,7 +248,8 @@ class Operations {
               (item) => item.projectId === project.projectId
             );
             projects[pId] = project;
-            fs.writeFileSync(dbPath, JSON.stringify(projects));
+            parsedDb.projects = projects;
+            fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
           });
       } else {
         const src = path.join(
@@ -243,6 +278,7 @@ class Operations {
         );
         project.isDeploying = false;
         project.status = "success";
+        project.deployLog = true;
         project.statusMessage = `Deployment completed please check log file => ${project.projectId}_success.log`;
         project.isDeploySuccess = true;
         project.deploymentDate = new Date();
@@ -251,19 +287,21 @@ class Operations {
           (item) => item.projectId === project.projectId
         );
         projects[pId] = project;
-        fs.writeFileSync(dbPath, JSON.stringify(projects));
+        parsedDb.projects = projects;
+        fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
       }
     } else {
       project.isDeploying = false;
       project.status = "error";
-      project.statusMessage = `It is required to build tthe project before deploying`;
+      project.statusMessage = `It is required to build the project before deploying`;
       project.isDeploySuccess = false;
       event.sender.send("status", JSON.stringify(project));
       const pId = projects.findIndex(
         (item) => item.projectId === project.projectId
       );
       projects[pId] = project;
-      fs.writeFileSync(dbPath, JSON.stringify(projects));
+      parsedDb.projects = projects;
+      fs.writeFileSync(dbPath, JSON.stringify(parsedDb));
     }
   };
 
@@ -279,16 +317,16 @@ class Operations {
         project.projectId + "_success.log"
       )}`
     )
-    .then((__result) => {
-      project.status = "info";
-      project.statusMessage = `Log File ${project.projectId}_success.log opened in Notepad`;
-      event.sender.send("status", JSON.stringify(project));
-    })
-    .catch((__error) => {
-      project.status = "error";
-      project.statusMessage = `Failed to open Log file ${project.projectId}_success.log`;
-      event.sender.send("status", JSON.stringify(project));
-    });
+      .then((__result) => {
+        project.status = "info";
+        project.statusMessage = `Log File ${project.projectId}_success.log opened in Notepad`;
+        event.sender.send("status", JSON.stringify(project));
+      })
+      .catch((__error) => {
+        project.status = "error";
+        project.statusMessage = `Failed to open Log file ${project.projectId}_success.log`;
+        event.sender.send("status", JSON.stringify(project));
+      });
   };
 
   buildErrorLogHandler = (event, data) => {
@@ -303,16 +341,16 @@ class Operations {
         project.projectId + "_error.log"
       )}`
     )
-    .then((__result) => {
-      project.status = "info";
-      project.statusMessage = `Log File ${project.projectId}_error.log opened in Notepad`;
-      event.sender.send("status", JSON.stringify(project));
-    })
-    .catch((__error) => {
-      project.status = "error";
-      project.statusMessage = `Failed to open Log file ${project.projectId}_error.log`;
-      event.sender.send("status", JSON.stringify(project));
-    });
+      .then((__result) => {
+        project.status = "info";
+        project.statusMessage = `Log File ${project.projectId}_error.log opened in Notepad`;
+        event.sender.send("status", JSON.stringify(project));
+      })
+      .catch((__error) => {
+        project.status = "error";
+        project.statusMessage = `Failed to open Log file ${project.projectId}_error.log`;
+        event.sender.send("status", JSON.stringify(project));
+      });
   };
 
   deploySuccessLogHandler = (event, data) => {
@@ -327,16 +365,16 @@ class Operations {
         project.projectId + "_success.log"
       )}`
     )
-    .then((__result) => {
-      project.status = "info";
-      project.statusMessage = `Log File ${project.projectId}_success.log opened in Notepad`;
-      event.sender.send("status", JSON.stringify(project));
-    })
-    .catch((__error) => {
-      project.status = "error";
-      project.statusMessage = `Failed to open Log file ${project.projectId}_success.log`;
-      event.sender.send("status", JSON.stringify(project));
-    });
+      .then((__result) => {
+        project.status = "info";
+        project.statusMessage = `Log File ${project.projectId}_success.log opened in Notepad`;
+        event.sender.send("status", JSON.stringify(project));
+      })
+      .catch((__error) => {
+        project.status = "error";
+        project.statusMessage = `Failed to open Log file ${project.projectId}_success.log`;
+        event.sender.send("status", JSON.stringify(project));
+      });
   };
 
   deployErrorLogHandler = (event, data) => {
@@ -361,6 +399,24 @@ class Operations {
         project.statusMessage = `Failed to open Log file ${project.projectId}_error.log`;
         event.sender.send("status", JSON.stringify(project));
       });
+  };
+
+  clearLogs = () => {
+    try {
+      fsx.rmSync(path.join(__dirname, "..", "logs"), { recursive: true });
+      this.checkDataBase();
+      dialog.showMessageBox({
+        title: "Clear Logs",
+        message: "All logs have been cleared successfully",
+        type: "info",
+      });
+    } catch (error) {
+      dialog.showMessageBox({
+        title: "Clear Logs",
+        message: "Failed to clear logs",
+        type: "error",
+      });
+    }
   };
 }
 

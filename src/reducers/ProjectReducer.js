@@ -11,6 +11,7 @@ export const ProjectActions = {
   isProd: 10,
   isBuilding: 11,
   isDeploying: 12,
+  category:13
 };
 
 export const PopulateInitialProjectState = (project) => {
@@ -45,6 +46,11 @@ export const PopulateInitialProjectState = (project) => {
       touched: false,
       isValid: project.warName.length > 0,
     },
+    category: {
+      value: project.category,
+      touched: false,
+      isValid: project.category.length > 0,
+    },
     isConfigurable: {
       value: project.isConfigurable,
       touched: false,
@@ -62,12 +68,14 @@ export const PopulateInitialProjectState = (project) => {
     isBuilding: project.isBuilding,
     buildDate: project.buildDate,
     deploymentDate: project.deploymentDate,
-    isFormValid: project.projectName.length > 0 &&
-    project.projectPath.length > 0 &&
-    project.deploymentPath.length > 0 &&
-    project.configuration.length > 0 &&
-    project.baseHref.length > 0 &&
-    project.warName.length > 0,
+    isFormValid:
+      project.projectName.length > 0 &&
+      project.projectPath.length > 0 &&
+      project.deploymentPath.length > 0 &&
+      project.configuration.length > 0 &&
+      project.baseHref.length > 0 &&
+      project.warName.length > 0 &&
+      project.category.length > 0,
     projectId: project.projectId,
   };
 };
@@ -78,7 +86,7 @@ export const ProjectReducer = (state, actions) => {
       return {
         ...state,
         projectName: {
-          value: actions.payload,
+          value:  actions.payload.length>10?actions.payload.substring(0,11):actions.payload,
           touched: true,
           isValid: actions.payload.length > 0,
         },
@@ -88,7 +96,8 @@ export const ProjectReducer = (state, actions) => {
           state.deploymentPath.value.length > 0 &&
           state.configuration.value.length > 0 &&
           state.baseHref.value.length > 0 &&
-          state.warName.value.length > 0,
+          state.warName.value.length > 0 &&
+          state.category.value.length > 0,
       };
     case ProjectActions.projectPath:
       return {
@@ -104,7 +113,8 @@ export const ProjectReducer = (state, actions) => {
           state.deploymentPath.value.length > 0 &&
           state.configuration.value.length > 0 &&
           state.baseHref.value.length > 0 &&
-          state.warName.value.length > 0,
+          state.warName.value.length > 0 && 
+          state.category.value.length > 0,
       };
     case ProjectActions.deploymentPath:
       return {
@@ -120,7 +130,8 @@ export const ProjectReducer = (state, actions) => {
           state.projectPath.value.length > 0 &&
           state.configuration.value.length > 0 &&
           state.baseHref.value.length > 0 &&
-          state.warName.value.length > 0,
+          state.warName.value.length > 0 &&
+          state.category.value.length > 0,
       };
     case ProjectActions.configuration:
       return {
@@ -136,7 +147,8 @@ export const ProjectReducer = (state, actions) => {
           state.projectPath.value.length > 0 &&
           state.deploymentPath.value.length > 0 &&
           state.baseHref.value.length > 0 &&
-          state.warName.value.length > 0,
+          state.warName.value.length > 0 &&
+          state.category.value.length > 0,
       };
     case ProjectActions.baseHref:
       return {
@@ -152,7 +164,8 @@ export const ProjectReducer = (state, actions) => {
           state.projectPath.value.length > 0 &&
           state.deploymentPath.value.length > 0 &&
           state.configuration.value.length > 0 &&
-          state.warName.value.length > 0,
+          state.warName.value.length > 0 &&
+          state.category.value.length > 0,
       };
     case ProjectActions.warName:
       return {
@@ -168,7 +181,8 @@ export const ProjectReducer = (state, actions) => {
           state.projectPath.value.length > 0 &&
           state.deploymentPath.value.length > 0 &&
           state.configuration.value.length > 0 &&
-          state.baseHref.value.length > 0,
+          state.baseHref.value.length > 0 &&
+          state.category.value.length > 0,
       };
     case ProjectActions.isConfigurable:
       return {
@@ -193,12 +207,32 @@ export const ProjectReducer = (state, actions) => {
           state.projectPath.value.length > 0 &&
           state.deploymentPath.value.length > 0 &&
           state.configuration.value.length > 0 &&
-          state.baseHref.value.length > 0,
+          state.baseHref.value.length > 0 &&
+          state.category.value.length > 0 &&
+          state.category.value.length > 0,
         warName: {
           value: state.warName.value,
           touched: true,
           isValid: actions.payload ? state.warName.value.length > 0 : true,
         },
+      };
+    case ProjectActions.category:
+      return {
+        ...state,
+        category: {
+          value:  actions.payload.length>8?actions.payload.substring(0,9):actions.payload,
+          touched: true,
+          isValid: actions.payload.length > 0,
+        },
+        isFormValid:
+          actions.payload.length > 0 &&
+          !['every','*'].includes(actions.payload.toLowerCase()) &&
+          state.warName.value.length > 0 &&
+          state.projectName.value.length > 0 &&
+          state.projectPath.value.length > 0 &&
+          state.deploymentPath.value.length > 0 &&
+          state.configuration.value.length > 0 &&
+          state.baseHref.value.length > 0,
       };
     case ProjectActions.deployBuild:
       return {
