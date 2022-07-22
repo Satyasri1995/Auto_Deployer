@@ -64,13 +64,13 @@
     "forge": {
       "packagerConfig": {
         "icon":"build/electron.ico",
-        "name":"Auto Deployer"
+        "name":"AutoDeployer"
       },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "Auto Deployer"
+            "name": "AutoDeployer"
           }
         },
         {

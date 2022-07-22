@@ -11,7 +11,7 @@ export const ProjectActions = {
   isProd: 10,
   isBuilding: 11,
   isDeploying: 12,
-  category:13
+  category: 13,
 };
 
 export const PopulateInitialProjectState = (project) => {
@@ -67,6 +67,8 @@ export const PopulateInitialProjectState = (project) => {
     isBuildFailure: project.isBuildFailure,
     isBuilding: project.isBuilding,
     buildDate: project.buildDate,
+    buildLog:project.buildLog,
+    deployLog:project.deployLog,
     deploymentDate: project.deploymentDate,
     isFormValid:
       project.projectName.length > 0 &&
@@ -86,7 +88,10 @@ export const ProjectReducer = (state, actions) => {
       return {
         ...state,
         projectName: {
-          value:  actions.payload.length>10?actions.payload.substring(0,11):actions.payload,
+          value:
+            actions.payload.length > 10
+              ? actions.payload.substring(0, 11)
+              : actions.payload,
           touched: true,
           isValid: actions.payload.length > 0,
         },
@@ -113,7 +118,7 @@ export const ProjectReducer = (state, actions) => {
           state.deploymentPath.value.length > 0 &&
           state.configuration.value.length > 0 &&
           state.baseHref.value.length > 0 &&
-          state.warName.value.length > 0 && 
+          state.warName.value.length > 0 &&
           state.category.value.length > 0,
       };
     case ProjectActions.deploymentPath:
@@ -220,13 +225,16 @@ export const ProjectReducer = (state, actions) => {
       return {
         ...state,
         category: {
-          value:  actions.payload.length>8?actions.payload.substring(0,9):actions.payload,
+          value:
+            actions.payload.length > 8
+              ? actions.payload.substring(0, 9)
+              : actions.payload,
           touched: true,
           isValid: actions.payload.length > 0,
         },
         isFormValid:
           actions.payload.length > 0 &&
-          !['every','*'].includes(actions.payload.toLowerCase()) &&
+          !["every", "*"].includes(actions.payload.toLowerCase()) &&
           state.warName.value.length > 0 &&
           state.projectName.value.length > 0 &&
           state.projectPath.value.length > 0 &&

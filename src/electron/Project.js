@@ -18,7 +18,7 @@ class Project {
     this.deploymentDate = data ? data.deploymentDate : null;
     this.statusMessage = data ? data.statusMessage : "This is Testing";
     this.category=data?data.category:'All';
-    this.buildLog=data?data.buildLog:false
+    this.buildLog=data?data.buildLog:false;
     this.deployLog=data?data.deployLog:false;
   }
 }

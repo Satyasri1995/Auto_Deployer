@@ -1,1 +1,1 @@
-{"projects":[],"categories":[]}
+{"projects":[{"projectId":"9048c52735","projectName":"EdSq","projectPath":"D:\\MEAN Stack\\EdSquare\\","deploymentPath":"D:\\MEAN Stack\\TestFolder\\","configuration":"development","baseHref":"./","warName":"project.war","isWar":false,"isProd":false,"isDeploying":false,"isBuildSuccess":true,"status":"success","isBuilding":false,"buildDate":"2022-07-22T17:34:42.402Z","deploymentDate":null,"statusMessage":"Build completed please check log file => 9048c52735_success.log","category":"All","buildLog":true}],"categories":["All"]}
