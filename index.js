@@ -2,17 +2,17 @@ const { Menu } = require("electron");
 const electron = require("electron");
 
 const path = require("path");
-const AppTray = require("./electron/AppTray");
-const MainWindow = require("./electron/MainWindow");
-const Operations = require("./electron/Operations");
-const {getAppOptions,getMainMenu} = require('./electron/Options');
+const AppTray = require("./src/electron/AppTray");
+const MainWindow = require("./src/electron/MainWindow");
+const Operations = require("./src/electron/Operations");
+const {getAppOptions,getMainMenu} = require('./src/electron/Options');
 const { app, ipcMain } = electron;
 
 let mainWindow;
 let tray;
 let mainMenu;
 let operations = new Operations();
-const htmlPath = path.join(__dirname, "./build/index.html");
+const htmlPath = path.join(__dirname,'build','index.html');
 
 
 app.on("ready", () => {
@@ -22,7 +22,7 @@ app.on("ready", () => {
   Menu.setApplicationMenu(mainMenu);
   app.setAppUserModelId("Auto Deployer");
   app.setName('Auto Deployer');
-  const iconPath = path.join(__dirname, "./electron/assets/electron.png");
+  const iconPath = path.join(__dirname, "build","electron.png");
   tray = new AppTray(iconPath, mainWindow);
   operations.checkDataBase();
 });

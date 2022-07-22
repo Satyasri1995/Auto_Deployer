@@ -160,3 +160,23 @@ function App() {
 }
 
 export default App;
+
+
+// "build": {
+//   "asar": true,
+//   "directories": {
+//     "buildResources": "build",
+//     "app": "./"
+//   },
+//   "appId": "com.dvs.auto_deployer",
+//   "productName": "Auto Deployer",
+//   "extends": null,
+//   "target": "NSIS",
+//   "icon": "build/electron.ico",
+//   "nsis":{
+//     "oneClick": false,
+//     "allowToChangeInstallationDirectory": true,
+//     "createDesktopShortcut":true,
+//     "installerIcon":"build/electron.ico"
+//   }
+// }

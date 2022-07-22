@@ -2,9 +2,9 @@ const Project = require("./Project");
 const fs = require("fs");
 const fsx = require("fs-extra");
 const path = require("path");
-const dbPath = path.join(__dirname, "..", "electronDB.dat");
-const logsBuildPath = path.join(__dirname, "..", "logs", "build");
-const logsDeployPath = path.join(__dirname, "..", "logs", "deploy");
+const dbPath = path.join(__dirname, "..","..", "electronDB.dat");
+const logsBuildPath = path.join(__dirname, "..","..", "logs", "build");
+const logsDeployPath = path.join(__dirname, "..","..", "logs", "deploy");
 const system = require("system-commands");
 const { dialog } = require("electron");
 
@@ -118,7 +118,7 @@ class Operations {
         let data = result;
         let logPath = path.join(
           __dirname,
-          "..",
+          "..","..",
           "logs",
           "build",
           `${project.projectId}_success.log`
@@ -141,7 +141,7 @@ class Operations {
       .catch((error) => {
         let logPath = path.join(
           __dirname,
-          "..",
+          "..","..",
           "logs",
           "build",
           `${project.projectId}_error.log`
@@ -206,7 +206,7 @@ class Operations {
             fsx.moveSync(src, dist, { recursive: true });
             let logPath = path.join(
               __dirname,
-              "..",
+              "..","..",
               "logs",
               "deploy",
               `${project.projectId}_success.log`
@@ -232,7 +232,7 @@ class Operations {
           .catch((error) => {
             let logPath = path.join(
               __dirname,
-              "..",
+              "..","..",
               "logs",
               "deploy",
               `${project.projectId}_error.log`
@@ -267,7 +267,7 @@ class Operations {
         fsx.moveSync(src, dist, { recursive: true });
         let logPath = path.join(
           __dirname,
-          "..",
+          "..","..",
           "logs",
           "deploy",
           `${project.projectId}_success.log`
@@ -311,7 +311,7 @@ class Operations {
     system(
       `notepad ${path.join(
         __dirname,
-        "..",
+        "..","..",
         "logs",
         "build",
         project.projectId + "_success.log"
@@ -335,7 +335,7 @@ class Operations {
     system(
       `notepad ${path.join(
         __dirname,
-        "..",
+        "..","..",
         "logs",
         "build",
         project.projectId + "_error.log"
@@ -359,7 +359,7 @@ class Operations {
     system(
       `notepad ${path.join(
         __dirname,
-        "..",
+        "..","..",
         "logs",
         "deploy",
         project.projectId + "_success.log"
@@ -383,7 +383,7 @@ class Operations {
     system(
       `notepad ${path.join(
         __dirname,
-        "..",
+        "..","..",
         "logs",
         "deploy",
         project.projectId + "_error.log"
@@ -403,7 +403,7 @@ class Operations {
 
   clearLogs = () => {
     try {
-      fsx.rmSync(path.join(__dirname, "..", "logs"), { recursive: true });
+      fsx.rmSync(path.join(__dirname, "..","..", "logs"), { recursive: true });
       this.checkDataBase();
       dialog.showMessageBox({
         title: "Clear Logs",

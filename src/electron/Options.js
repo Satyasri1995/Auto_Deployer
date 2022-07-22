@@ -7,11 +7,12 @@ const getAppOptions=(path)=>{
         height: 500,
         frame: true,
         show: true,
-        resizable: true,
-        skipTaskbar: true,
+        resizable: false,
+        skipTaskbar: false,
         movable: true,
         webPreferences: {
           backgroundThrottling: false,
+          webSecurity: false,
           preload: path.join(__dirname, "preload.js"),
         },
       }
@@ -32,11 +33,11 @@ const getMainMenu=(app,mainWindow)=>{
               click(){app.quit()},
               accelarator:'CmsOrCtrl+Q'
             },
-            {
-              label:'DevTools',
-              click(){mainWindow.webContents.openDevTools()},
-              accelarator:'f5'
-            },
+            // {
+            //   label:'DevTools',
+            //   click(){mainWindow.webContents.openDevTools()},
+            //   accelarator:'f5'
+            // },
             {
               label:'Clear Logs',
               click(){new Operations().clearLogs()},

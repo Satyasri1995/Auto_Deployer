@@ -1,12 +1,15 @@
 {
   "name": "auto_deployer",
   "version": "0.1.0",
+  "author": "Davuloori Venkata Satya Ravi Teja",
+  "description": "Auto Deployer app heps to build angular apps and to move the build to specific location after build is completed",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "electron-squirrel-startup": "^1.0.0",
     "fs-extra": "^10.1.0",
     "primeflex": "^3.2.1",
     "primeicons": "^5.0.0",
@@ -21,13 +24,15 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "electron ."
+    "electron": "electron .",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
-  "homepage": ".",
+  "homepage": "./",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -47,6 +52,42 @@
     ]
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.64",
+    "@electron-forge/maker-deb": "^6.0.0-beta.64",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.64",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.64",
+    "@electron-forge/maker-zip": "^6.0.0-beta.64",
     "electron": "^19.0.8"
+  },
+  "main": "index.js",
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon":"build/electron.ico",
+        "name":"Auto Deployer"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "Auto Deployer"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
