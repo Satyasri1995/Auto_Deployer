@@ -61,6 +61,10 @@ class Operations {
   updateHandler = (__event, data) => {
     const parsedData = JSON.parse(data);
     const project = new Project(parsedData);
+    project.isBuildSuccess=false;
+    project.isDeploySuccess=false;
+    project.buildLog=false;
+    project.deployLog=false;
     const rawData = fs.readFileSync(dbPath);
     const parsedDb = JSON.parse(rawData);
     let projects = parsedDb.projects.map((item) => new Project(item));

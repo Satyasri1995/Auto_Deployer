@@ -52,9 +52,8 @@ const ProjectsList = (props) => {
           icon={data.isBuilding ? "pi pi-spin pi-spinner" : "pi pi-play"}
           className="p-button-raised p-button-primary p-button-sm p-button-rounded mx-1"
         />
-        {data.buildDate ? (
+        {data.isBuildSuccess ? (
           <Fragment>
-            {data.isDeploying}
             <Button
               id={`${data.projectId}_deployBtn`}
               onClick={() => {
